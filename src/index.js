@@ -1,8 +1,10 @@
-// write your code here
+const API = "http://localhost:3000/ramens"
+
 const showRamen = (ramenObject) => {
-    const mainIMG = document.querySelector("#ramen-detail img")
-    mainIMG.src = ramenObject.image
-    mainIMG.alt = ramenObject.id
+const centerIMG = document.querySelector("#ramen-detail img")
+    centerIMG.src = ramenObject.image
+    centerIMG.alt = ramenObject.name
+    centerIMG.value = ramenObject.id
 
     const ramenName = document.querySelector("h2.name")
     ramenName.textContent = ramenObject.name
@@ -40,7 +42,7 @@ const submitRamen = () => {
         newRamenObject["rating"] = document.getElementById("new-rating").value
         newRamenObject["comment"] = document.getElementById("new-comment").value
 
-        fetch("http://localhost:3000/ramens")
+        fetch(API)
         .then(resp => resp.json())
         .then(ramenArray => {
             newRamenObject.id = ramenArray.slice(-1)[0].id + 1
@@ -53,13 +55,13 @@ const submitRamen = () => {
                 body: JSON.stringify(newRamenObject)
             }
             addRamen(newRamenObject)
-            fetch("http://localhost:3000/ramens", postData)
+            fetch(API, postData)
         })
     })
 }
 
 const renderPage = () => {
-    fetch("http://localhost:3000/ramens")
+    fetch(API)
     .then(resp => resp.json())
     .then(objectArray => {
         objectArray.forEach(object => {
@@ -72,11 +74,11 @@ const renderPage = () => {
 const theDeleteButton = () => {
     const deleteButton = document.getElementById("delete")
     deleteButton.addEventListener("click", () => {
-        const currentId = document.querySelector("#ramen-detail img").alt
-        fetch(`http://localhost:3000/ramens/${currentId}`,{method:"delete"})
+        const currentId = document.querySelector("#ramen-detail img").value
+        fetch(`${API}/${currentId}`,{method:"delete"})
         .then(() => {
             document.getElementById("img" + currentId.toString()).remove()
-            fetch("http://localhost:3000/ramens").then(resp => resp.json())
+            fetch(API).then(resp => resp.json())
             .then(objectArray => showRamen(objectArray[0]))
         })
         
